@@ -1,4 +1,5 @@
 .section .data
+	topoInicialHeap: .quad 0
 	A: .quad 0
 	B: .quad 0
 .section .text 
@@ -8,12 +9,19 @@ iniciaAlocador:
 	movq %rsp, %rbp
 	movq $12, %rax
 	movq $0, %rdi
+	movq %rdi, topoInicialHeap
 	syscall							#executa a syscall da brk(), retorna o valor do topo em rax
 
 
 	popq %rbp
 	ret
 finalizaAlocador:
+	pushq %rbp
+	movq %rsp, %rbp
+	movq topoInicialHeap, %rdi
+	movq $12, %rax
+	syscall
+
 alocaMem:
 	pushq %rbp
 	movq %rsp, %rbp
@@ -31,7 +39,7 @@ alocaMem:
 liberaMem:
 imprimeMapa:
 _start:
-	call iniciaAlocador				#inicia alocador - ainda n faz nada
+	call iniciaAlocador				#inicia alocador 
 	
 	movq $24, A
 	pushq A
