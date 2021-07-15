@@ -1,18 +1,12 @@
+
 .section .data
 	topoInicialHeap: .quad 0
 	A: .quad 0
 	B: .quad 0
+	.local brk_atual
+	.comm brk_atual, 8, 8
 .section .text 
-.globl iniciaAlocador,finalizaAlocador,alocaMem, show, liberaMem,imprimeMapa,buscador, _start
-iniciaAlocador:
-	pushq %rbp			
-	movq %rsp, %rbp
-	movq $12, %rax
-	movq $0, %rdi
-	movq %rdi, topoInicialHeap
-	syscall							#executa a syscall da brk(), retorna o valor do topo em rax
-	popq %rbp
-	ret
+.globl iniciaAlocador , finalizaAlocador , alocaMem , show , liberaMem , imprimeMapa , buscador , _start
 finalizaAlocador:
 	pushq %rbp
 	movq %rsp, %rbp
@@ -21,31 +15,29 @@ finalizaAlocador:
 	syscall
 	popq %rbp
 	ret
+liberaMem:
+iniciaAlocador:
+    movq $12, %rax  
+    movq $0, %rdi   
+    syscall
+    movq %rax, brk_atual
+    movq %rax, topoInicialHeap
+    ret
+
 alocaMem:
 	pushq %rbp
 	movq %rsp, %rbp
+	movq 16(%rbp), %rcx
+	movq (%rcx), %rdx
+	movq %rdx, %rdi
+    movq brk_atual, %rdx 
+    addq %rdx, %rdi 
+    movq $12, %rax  
+    syscall         
+    movq %rax, brk_atual
+    popq %rbp 
+    ret
 
-	movq 16(%rbp), %rbx				#rbx recebe valor de bytes do malloc
-	#busca pelo espaço apropriado
-	addq $16, %rbx
-	movq %rbx, %rdi			 		#soma o topo + deslocamento solicitado
-	movq $12, %rax					#invoca a brk com o novo valor de alocação recebido por 16(%rbp)
-	syscall
-
-	movq 16(%rbp), %rax
-	popq %rbp
-	ret
-show:
-	pushq %rbp
-	movq %rsp, %rbp
-
-	movq $0, %rdi
-	movq $12, %rax
-	syscall
-
-	popq %rbp
-	ret
-liberaMem:
 imprimeMapa:
 buscador:
 	call iniciaAlocador
@@ -79,5 +71,17 @@ buscador:
 
 	popq %rbp
 	ret
+_start:
+	call iniciaAlocador
+	movq $10, A
+	pushq $A
+	call alocaMem
+	movq $27, B
+	pushq $B
+	call alocaMem
+	movq brk_atual, %rdi
+	movq $60, %rax
+	syscall
 
+	
 
