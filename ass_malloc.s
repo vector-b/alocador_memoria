@@ -27,6 +27,10 @@ iniciaAlocador:
 alocaMem:
 	pushq %rbp
 	movq %rsp, %rbp
+
+
+	#faz a busca
+
 	movq 16(%rbp), %rcx
 	movq (%rcx), %rdx
 	movq %rdx, %rdi
@@ -73,10 +77,10 @@ buscador:
 	ret
 _start:
 	call iniciaAlocador
-	movq $10, A
+	movq $14, A
 	pushq $A
 	call alocaMem
-	movq $27, B
+	movq $30, B
 	pushq $B
 	call alocaMem
 	movq brk_atual, %rdi
