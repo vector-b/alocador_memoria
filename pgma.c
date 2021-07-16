@@ -10,8 +10,4 @@ int main(){
   printf("Variavel na memoria: %ld\n",*a );
   printf("Finalizando Alocador\n");
   finalizaAlocador();
-  long int *b;
-  b = show();
-  printf("%ld\n",*b );
-
 }

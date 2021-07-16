@@ -1,10 +1,17 @@
 
 .section .data
-	topoInicialHeap: .quad 0
+	
 	A: .quad 0
 	B: .quad 0
-	.local brk_atual
-	.comm brk_atual, 8, 8
+	
+
+	topoInicialHeap: .quad 0
+	#.local brk_atual
+	.comm brk_atual, 8
+
+	.equ NOT_OK, 0 
+	.equ OK, 1 
+
 .section .text 
 .globl iniciaAlocador , finalizaAlocador , alocaMem , show , liberaMem , imprimeMapa , buscador , _start
 finalizaAlocador:
@@ -26,19 +33,30 @@ iniciaAlocador:
 
 alocaMem:
 	pushq %rbp
-	movq %rsp, %rbp
+	movq %rsp, %rbp								#altera o RA
 
 
 	#faz a busca
 
-	movq 16(%rbp), %rcx
+	movq 16(%rbp), %rcx							#passa o novo valor desejado
 	movq (%rcx), %rdx
-	movq %rdx, %rdi
-    movq brk_atual, %rdx 
-    addq %rdx, %rdi 
+	movq %rdx, %rdi								#adiciona o valor externo em rdi
+
+	addq $16, %rdi								#soma 16 bytes ao valor alocado - 8 pra cada long int da estrutura
+
+    movq brk_atual, %rdx 						#passa o atual index de brk
+
+    addq %rdx, %rdi 							#syscall brk
     movq $12, %rax  
-    syscall         
-    movq %rax, brk_atual
+    syscall
+
+    #movq   (%rax), %rdi 						#load the pointer from memory, if you didn't already have it in a register
+    #movq   $1, %rdi 
+	#mov   byte [rdi], 'A'            			#a char at it's first byte
+	#mov   [rdi+1], ecx               			#a 32-bit value in the last 4 bytes.
+
+    movq %rax, brk_atual						#move o valor pra variavel atual de brk
+
     popq %rbp 
     ret
 
@@ -77,9 +95,6 @@ buscador:
 	ret
 _start:
 	call iniciaAlocador
-	movq $14, A
-	pushq $A
-	call alocaMem
 	movq $30, B
 	pushq $B
 	call alocaMem
