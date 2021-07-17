@@ -3,7 +3,7 @@
 	
 	A: .quad 0
 	B: .quad 0
-
+	C: .quad 0
 	#.local brk_atual
 	.comm brk_atual, 8
 	topo_heap: .long 0
@@ -22,7 +22,7 @@ finalizaAlocador:
 	syscall
 	popq %rbp
 	ret
-liberaMem:
+
 iniciaAlocador:
 	pushq %rbp
 	movq %rsp, %rbp
@@ -38,7 +38,6 @@ iniciaAlocador:
     movq %rbp, %rsp
     popq %rbp
     ret
-
 alocaMem:
 	pushq %rbp
 	movq %rsp, %rbp								#altera o RA
@@ -48,8 +47,6 @@ alocaMem:
 
 	movq topo_heap, %rax
 	movq brk_atual, %rbx
-
-	
 
 	busca_entrada:
 	 cmpq %rax, %rbx
@@ -61,8 +58,11 @@ alocaMem:
 
 	cmpq $OK, %rdx
 	jne pesquisa
-	aqui:
+	cmpq (%rcx), %rsi  #RCX <= RSI
+	jl pesquisa
 
+	aqui:
+	 jmp nem
 
 	 jmp saida
 	pesquisa:
@@ -99,7 +99,14 @@ alocaMem:
     saida:
      popq %rbp 
      ret
-
+liberaMem:
+	pushq %rbp
+	movq %rsp, %rbp
+	movq 16(%rbp), %rax
+	subq $16, %rax
+	movq $OK, 0(%rax)
+	popq %rbp
+	ret
 imprimeMapa:
 buscador:
 	call iniciaAlocador
@@ -133,19 +140,18 @@ buscador:
 
 	popq %rbp
 	ret
-_start:
+/*_start:
 	call iniciaAlocador
-	movq $16, B
+	movq $24, B
 	pushq $B
 	call alocaMem
 
-	movq $16, A
-	pushq $A
-	call alocaMem
+	pushq %rax
+	call liberaMem
 
-	movq brk_atual, %rdi
+	movq %rax, %rdi
 	movq $60, %rax
-	syscall
+	syscall*/
 
 	
 
