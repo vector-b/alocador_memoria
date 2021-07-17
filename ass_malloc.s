@@ -53,46 +53,34 @@ alocaMem:
 
 	busca_entrada:
 	 cmpq %rax, %rbx
-	 je fim 
+	 je first_time
 
 	first_time:
 	 #executa uma operação de memória para a primeira vez que essa função é utilizada
-	 
-/*	 
-	movq 0(%rax), %rdx
-	cmpq $1, %rdx
-	 jne aqui
+	 movq (%rcx), %rdx
+	 addq $16, %rbx
+	 addq %rdx, %rbx
 
-	aqui:
+	 pushq %rax
 
-	aqui:
-	 movq $1, 0(%rax)
-	 movq %rbx, 8(%rax)
+	 movq $12, %rax
+	 movq %rbx, %rdi
+	 syscall
+
+	 popq %rax
+
+	 movq $NOT_OK, 0(%rax)
+	 movq %rcx, 8(%rax)
 	 addq $16, %rax
 
-	fim:
-*/
+	 movq %rbx, brk_atual
 
+	 jmp saida
+	 
 
-	/*movq %rdx, %rdi								#adiciona o valor externo em rdi
-
-	addq $16, %rdi								#soma 16 bytes ao valor alocado - 8 pra cada long int da estrutura
-
-    movq brk_atual, %rdx 						#passa o atual index de brk
-
-    addq %rdx, %rdi 							#syscall brk
-    movq $12, %rax  
-    syscall
-
-    #movq   (%rax), %rdi 						#load the pointer from memory, if you didn't already have it in a register
-    #movq   $1, %rdi 
-	#mov   byte [rdi], 'A'            			#a char at it's first byte
-	#mov   [rdi+1], ecx               			#a 32-bit value in the last 4 bytes.
-
-    movq %rax, brk_atual						#move o valor pra variavel atual de brk
-    */
-    popq %rbp 
-    ret
+    saida:
+     popq %rbp 
+     ret
 
 imprimeMapa:
 buscador:
@@ -130,11 +118,11 @@ buscador:
 
 _start:
 	call iniciaAlocador
-	/*movq $30, B
+	movq $20, B
 	pushq $B
-	call alocaMem*/
+	call alocaMem
 
-	movq %rax, %rdi
+	movq brk_atual, %rdi
 	movq $60, %rax
 	syscall
 

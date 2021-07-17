@@ -1,0 +1,33 @@
+/*	 
+	movq 0(%rax), %rdx
+	cmpq $1, %rdx
+	 jne aqui
+
+	aqui:
+
+	aqui:
+	 movq $1, 0(%rax)
+	 movq %rbx, 8(%rax)
+	 addq $16, %rax
+
+	fim:
+*/
+
+
+	/*movq %rdx, %rdi								#adiciona o valor externo em rdi
+
+	addq $16, %rdi								#soma 16 bytes ao valor alocado - 8 pra cada long int da estrutura
+
+    movq brk_atual, %rdx 						#passa o atual index de brk
+
+    addq %rdx, %rdi 							#syscall brk
+    movq $12, %rax  
+    syscall
+
+    #movq   (%rax), %rdi 						#load the pointer from memory, if you didn't already have it in a register
+    #movq   $1, %rdi 
+	#mov   byte [rdi], 'A'            			#a char at it's first byte
+	#mov   [rdi+1], ecx               			#a 32-bit value in the last 4 bytes.
+
+    movq %rax, brk_atual						#move o valor pra variavel atual de brk
+    */
