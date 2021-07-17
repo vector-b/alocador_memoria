@@ -31,7 +31,7 @@ iniciaAlocador:
     movq $0, %rdi   
     syscall
 
-    inc %rax
+    #inc %rax
     movq %rax, brk_atual
     movq %rax, topo_heap
 
@@ -53,9 +53,27 @@ alocaMem:
 
 	busca_entrada:
 	 cmpq %rax, %rbx
-	 je first_time
+	 je nem
 
-	first_time:
+	#hora de checar se o primeiro espaço esta disponivel
+	movq 0(%rax), %rdx
+	movq 8(%rax), %rsi
+
+	cmpq $OK, %rdx
+	jne pesquisa
+	aqui:
+
+
+	 jmp saida
+	pesquisa:
+	 addq $16, %rax
+	 addq %rsi, %rax
+
+	 #movq %rdx, %rax
+	 #jmp busca_entrada
+	 #movq $66, brk_atual 
+	 jmp busca_entrada
+	nem:		#sigla pra not enough memory
 	 #executa uma operação de memória para a primeira vez que essa função é utilizada
 	 movq (%rcx), %rdx
 	 addq $16, %rbx
@@ -70,7 +88,7 @@ alocaMem:
 	 popq %rax
 
 	 movq $NOT_OK, 0(%rax)
-	 movq %rcx, 8(%rax)
+	 movq %rdx, 8(%rax)
 	 addq $16, %rax
 
 	 movq %rbx, brk_atual
@@ -115,11 +133,14 @@ buscador:
 
 	popq %rbp
 	ret
-
 _start:
 	call iniciaAlocador
-	movq $20, B
+	movq $16, B
 	pushq $B
+	call alocaMem
+
+	movq $16, A
+	pushq $A
 	call alocaMem
 
 	movq brk_atual, %rdi

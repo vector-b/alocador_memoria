@@ -6,7 +6,7 @@ int main(){
   iniciaAlocador();
   //printf("Alocando Exemplo\n");
   a=alocaMem(100);
-  //*a = 1;
+  *a = 1;
   //printf("Variavel na memoria: %ld\n",*a );
   //printf("Finalizando Alocador\n");
   finalizaAlocador();
