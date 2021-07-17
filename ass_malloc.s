@@ -3,44 +3,78 @@
 	
 	A: .quad 0
 	B: .quad 0
-	
 
-	topoInicialHeap: .quad 0
 	#.local brk_atual
 	.comm brk_atual, 8
+	topo_heap: .long 0
 
-	.equ NOT_OK, 0 
-	.equ OK, 1 
+	.equ VN, 0
+	.equ NOT_OK, 1 
+	.equ OK, 0 
 
 .section .text 
 .globl iniciaAlocador , finalizaAlocador , alocaMem , show , liberaMem , imprimeMapa , buscador , _start
 finalizaAlocador:
 	pushq %rbp
 	movq %rsp, %rbp
-	movq topoInicialHeap, %rdi
+	movq topo_heap, %rdi
 	movq $12, %rax
 	syscall
 	popq %rbp
 	ret
 liberaMem:
 iniciaAlocador:
+	pushq %rbp
+	movq %rsp, %rbp
+
     movq $12, %rax  
     movq $0, %rdi   
     syscall
+
+    inc %rax
     movq %rax, brk_atual
-    movq %rax, topoInicialHeap
+    movq %rax, topo_heap
+
+    movq %rbp, %rsp
+    popq %rbp
     ret
 
 alocaMem:
 	pushq %rbp
 	movq %rsp, %rbp								#altera o RA
 
-
-	#faz a busca
-
 	movq 16(%rbp), %rcx							#passa o novo valor desejado
-	movq (%rcx), %rdx
-	movq %rdx, %rdi								#adiciona o valor externo em rdi
+	#movq (%rcx), %rdx
+
+	movq topo_heap, %rax
+	movq brk_atual, %rbx
+
+	
+
+	busca_entrada:
+	 cmpq %rax, %rbx
+	 je fim 
+
+	first_time:
+	 #executa uma operação de memória para a primeira vez que essa função é utilizada
+	 
+/*	 
+	movq 0(%rax), %rdx
+	cmpq $1, %rdx
+	 jne aqui
+
+	aqui:
+
+	aqui:
+	 movq $1, 0(%rax)
+	 movq %rbx, 8(%rax)
+	 addq $16, %rax
+
+	fim:
+*/
+
+
+	/*movq %rdx, %rdi								#adiciona o valor externo em rdi
 
 	addq $16, %rdi								#soma 16 bytes ao valor alocado - 8 pra cada long int da estrutura
 
@@ -56,7 +90,7 @@ alocaMem:
 	#mov   [rdi+1], ecx               			#a 32-bit value in the last 4 bytes.
 
     movq %rax, brk_atual						#move o valor pra variavel atual de brk
-
+    */
     popq %rbp 
     ret
 
@@ -93,12 +127,14 @@ buscador:
 
 	popq %rbp
 	ret
+
 _start:
 	call iniciaAlocador
-	movq $30, B
+	/*movq $30, B
 	pushq $B
-	call alocaMem
-	movq brk_atual, %rdi
+	call alocaMem*/
+
+	movq %rax, %rdi
 	movq $60, %rax
 	syscall
 
