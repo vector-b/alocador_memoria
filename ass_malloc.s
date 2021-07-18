@@ -42,39 +42,47 @@ alocaMem:
 	pushq %rbp
 	movq %rsp, %rbp								#altera o RA
 
-	movq 16(%rbp), %rcx							#passa o novo valor desejado
+	movq 16(%rbp), %rcx							#passa o novo valor desejado em rcx
 	#movq (%rcx), %rdx
 
-	movq topo_heap, %rax
-	movq brk_atual, %rbx
+	movq topo_heap, %rax						#move o atual topo da heap para rax
+	movq brk_atual, %rbx						#move a brk_atual(último valor) pra rbx
 
-	busca_entrada:
-	 cmpq %rax, %rbx
-	 je nem
+	cmpq $0, topo_heap
+	je nem
 
-	#hora de checar se o primeiro espaço esta disponivel
-	movq 0(%rax), %rdx
-	movq 8(%rax), %rsi
+#----------------------------------------------------------------------------------------------------------------------------------------------------
+	busca_entrada:	
+	 cmpq %rax, %rbx							#compara o valor da brk atual com o valor do topo, se forem iguais precisamos de mais memória
+	 je nem										#caso a comparação seja igual, pula pra função nem
 
-	cmpq $OK, %rdx
-	jne pesquisa
-	cmpq (%rcx), %rsi  #RCX <= RSI
-	jl pesquisa
+	 #Salva os inteiros do header do bloco, que possuem 8 bytes cada
+	 movq 0(%rax), %rdx							#move o indice 0 ou 1 do bloco atual de memória pra rdx
+	 movq 8(%rax), %rsi 							#move o tamanho do bloco de memoria para rsi
 
-	aqui:
-	 jmp nem
+	 cmpq $OK, %rdx								#compara rdx com OK = 0
+	 jne pesquisa								#caso não seja OK, pula para pesquisar um novo bloco
+	
+	 cmpq (%rcx), %rsi  #RCX <= RSI 				#compara o valor desejado com o valor disponivel
+	 jl pesquisa 								#caso o valor disponivel seja menor do que o necessario, pula pra um novo block
 
-	 jmp saida
+	 jmp bloco_atual
+#-----------------------------------------------------------------------------------------------------------------------------------------------------
 	pesquisa:
 	 addq $16, %rax
 	 addq %rsi, %rax
 
-	 #movq %rdx, %rax
-	 #jmp busca_entrada
-	 #movq $66, brk_atual 
 	 jmp busca_entrada
-	nem:		#sigla pra not enough memory
-	 #executa uma operação de memória para a primeira vez que essa função é utilizada
+#-----------------------------------------------------------------------------------------------------------------------------------------------------
+	bloco_atual:
+	 movq $NOT_OK, 0(%rax)
+	 movq (%rcx), %rdx
+	 movq %rdx, 8(%rax)
+	 addq $16, %rax
+	 addq $1, %r9
+	 jmp saida
+#-----------------------------------------------------------------------------------------------------------------------------------------------------
+	nem:										#sigla pra not enough memory  #essa função é designada para cada vez que for necessãrio alocar mais memória
 	 movq (%rcx), %rdx
 	 addq $16, %rbx
 	 addq %rdx, %rbx
@@ -92,6 +100,7 @@ alocaMem:
 	 addq $16, %rax
 
 	 movq %rbx, brk_atual
+	 addq $1, %r8
 
 	 jmp saida
 	 
@@ -99,6 +108,7 @@ alocaMem:
     saida:
      popq %rbp 
      ret
+
 liberaMem:
 	pushq %rbp
 	movq %rsp, %rbp
@@ -108,50 +118,29 @@ liberaMem:
 	popq %rbp
 	ret
 imprimeMapa:
-buscador:
+_start:
 	call iniciaAlocador
-	pushq %rbp
-	movq %rsp, %rbp
 
-	movq 16(%rbp), %rbx
-	movq (%rbx), %rcx
-	
-	movq $0, %rdi
-	movq $12, %rax
-	syscall 
+	movq $0, %r8
+	movq $0, %r9
 
-	movq %rax, %rsi	#backup do ponteiro
+	movq $24, A
+	pushq $A
+	call alocaMem
 
-
-	movq $0, %rdx
-	while:
-		cmpq $1, %rdx
-		je fim_while
-						#inicio do while
-	fim_while:
-	#a terminar
-
-	#movq $0, %rdi
-	#movq $12, %rax
-	#syscall
-
-	#movq %rax, %rcx
-	#movq %rcx, (%rbx) 
-
-	popq %rbp
-	ret
-/*_start:
-	call iniciaAlocador
 	movq $24, B
 	pushq $B
 	call alocaMem
 
-	pushq %rax
-	call liberaMem
+	movq $24, C
+	pushq $C
+	call alocaMem
+	#pushq %rax
+	#call liberaMem
 
-	movq %rax, %rdi
+	movq %r9, %rdi
 	movq $60, %rax
-	syscall*/
+	syscall
 
 	
 

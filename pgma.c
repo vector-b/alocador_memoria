@@ -1,15 +1,16 @@
 #include "meuAlocador.h" 
 #include <stdio.h>
+#include <string.h>
 int main(){
-  long int *a,*b;
-  //printf("Inicializando ALocador\n");
-  iniciaAlocador();
-  //printf("Alocando Exemplo\n");
-  a=alocaMem(100);
-  *a = 1;
-  liberaMem(a);
-  printf("%ld\n",*a );
-  //printf("Variavel na memoria: %ld\n",*a );
-  //printf("Finalizando Alocador\n");
+  void *a,*b;
+  iniciaAlocador ();
+  a = alocaMem (100) ;
+  b = alocaMem (200) ;
+  strcpy (a, " Preenchimento de Vetor ");
+  strcpy (b, a);
+  liberaMem (a);
+  liberaMem (b);
+  //a = alocaMem(50);
+  //liberaMem(a);
   finalizaAlocador();
 }
