@@ -58,19 +58,19 @@ alocaMem:
 
 	 #Salva os inteiros do header do bloco, que possuem 8 bytes cada
 	 movq 0(%rax), %rdx							#move o indice 0 ou 1 do bloco atual de memória pra rdx
-	 movq 8(%rax), %rsi 							#move o tamanho do bloco de memoria para rsi
+	 movq 8(%rax), %rsi 						#move o tamanho do bloco de memoria para rsi
 
 	 cmpq $OK, %rdx								#compara rdx com OK = 0
 	 jne pesquisa								#caso não seja OK, pula para pesquisar um novo bloco
 	
-	 cmpq (%rcx), %rsi  #RCX <= RSI 				#compara o valor desejado com o valor disponivel
+	 cmpq (%rcx), %rsi  #RCX <= RSI 			#compara o valor desejado com o valor disponivel
 	 jl pesquisa 								#caso o valor disponivel seja menor do que o necessario, pula pra um novo block
 
 	 jmp bloco_atual
 #-----------------------------------------------------------------------------------------------------------------------------------------------------
-	pesquisa:
-	 addq $16, %rax
-	 addq %rsi, %rax
+	pesquisa:									#pesquisa o próximo bloco de memória
+	 addq $16, %rax								#adiciona 16 bytes (tamanho do header) no %rax
+	 addq %rsi, %rax							#adiciona o tamanho do bloco no %rax, indo assim pro próximo bloco
 
 	 jmp busca_entrada
 #-----------------------------------------------------------------------------------------------------------------------------------------------------
