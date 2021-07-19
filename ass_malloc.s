@@ -1,10 +1,4 @@
-
-.section .data
-	
-	A: .quad 0
-	B: .quad 0
-	C: .quad 0
-	#.local brk_atual
+.section .data	
 	.comm brk_atual, 8
 	topo_heap: .long 0
 
@@ -18,7 +12,9 @@
 	str1:	.string "Espaço: [%u] -----\n"
 
 .section .text 
-.globl iniciaAlocador , finalizaAlocador , alocaMem , show , liberaMem , imprimeMapa , buscador , _start, main
+.globl iniciaAlocador,finalizaAlocador,alocaMem,show,liberaMem,imprimeMapa,buscador,_start,main
+
+
 finalizaAlocador:
 	pushq %rbp
 	movq %rsp, %rbp
@@ -27,6 +23,7 @@ finalizaAlocador:
 	syscall
 	popq %rbp
 	ret
+
 
 iniciaAlocador:
 	pushq %rbp
@@ -43,6 +40,8 @@ iniciaAlocador:
     movq %rbp, %rsp
     popq %rbp
     ret
+
+
 alocaMem:
 	pushq %rbp
 	movq %rsp, %rbp								#altera o RA
@@ -51,11 +50,10 @@ alocaMem:
 
 	movq topo_heap, %rax						#move o atual topo da heap para rax
 	movq brk_atual, %rbx						#move a brk_atual(último valor) pra rbx
-
 #----------------------------------------------------------------------------------------------------------------------------------------------------
 	busca_entrada:	
 	 cmpq %rax, %rbx							#compara o valor da brk atual com o valor do topo, se forem iguais precisamos de mais memória
-	 je nem										#caso a comparação seja igual, pula pra função nem
+	 je ajusta_memoria							#caso a comparação seja igual, pula pra função nem
 
 	 #Salva os inteiros do header do bloco, que possuem 8 bytes cada
 	 movq 0(%rax), %rdx							#move o indice 0 ou 1 do bloco atual de memória pra rdx
@@ -83,29 +81,25 @@ alocaMem:
 	 addq $1, %r9
 	 jmp saida
 #-----------------------------------------------------------------------------------------------------------------------------------------------------
-	nem:										#sigla pra not enough memory  #essa função é designada para cada vez que for necessãrio alocar mais memória
+	ajusta_memoria:										
 	 movq (%rcx), %rdx
 	 addq $16, %rbx
 	 addq %rdx, %rbx
 
 	 pushq %rax
-	 pushq %rbx
-	 pushq %rdi
 
 	 movq $12, %rax
 	 movq %rbx, %rdi
 	 syscall
 
 	 popq %rax
-	 popq %rbx
-	 popq %rdi
 
 	 movq $NOT_OK, 0(%rax)
 	 movq %rdx, 8(%rax)
 	 addq $16, %rax
 
 	 movq %rbx, brk_atual
-	 addq $1, %r8
+	 #addq $1, %r8
 
 	 jmp saida
 	 
@@ -124,7 +118,11 @@ liberaMem:
 
 	popq %rbp
 	ret
+
+
 #---------------------------------------------------------------------------------------------------------------------------------------------------
+
+
 imprimeMapa:
 	pushq %rbp
 	movq %rsp, %rbp
@@ -157,6 +155,8 @@ imprimeMapa:
 
 	popq %rbp
 	ret
+
+
 /*_start:
 	call iniciaAlocador
 
