@@ -10,7 +10,7 @@ int main(){
   strcpy (b, a);
   liberaMem (a);
   liberaMem (b);
-  //a = alocaMem(50);
+  a = alocaMem(50);
   //liberaMem(a);
   finalizaAlocador();
 }

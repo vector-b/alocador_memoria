@@ -48,7 +48,7 @@ alocaMem:
 	movq topo_heap, %rax						#move o atual topo da heap para rax
 	movq brk_atual, %rbx						#move a brk_atual(último valor) pra rbx
 
-	cmpq $0, topo_heap
+	cmpq $0, brk_atual
 	je nem
 
 #----------------------------------------------------------------------------------------------------------------------------------------------------
@@ -108,7 +108,7 @@ alocaMem:
     saida:
      popq %rbp 
      ret
-
+#---------------------------------------------------------------------------------------------------------------------------------------------------
 liberaMem:
 	pushq %rbp
 	movq %rsp, %rbp
@@ -117,8 +117,9 @@ liberaMem:
 	movq $OK, 0(%rax)
 	popq %rbp
 	ret
+#---------------------------------------------------------------------------------------------------------------------------------------------------
 imprimeMapa:
-_start:
+/*_start:
 	call iniciaAlocador
 
 	movq $0, %r8
@@ -135,12 +136,13 @@ _start:
 	movq $24, C
 	pushq $C
 	call alocaMem
+
+
 	#pushq %rax
 	#call liberaMem
 
 	movq %r9, %rdi
 	movq $60, %rax
 	syscall
-
-	
+*/
 
