@@ -1,12 +1,15 @@
-# Makefile
-all: program1 program2 program3
+AS = as malloc.s -o malloc.o
+all:
+	$(AS)
+	ld malloc.o -o  run -dynamic-linker /lib/x86_64-linux-gnu/ld-linux-x86-64.so.2 /usr/lib/x86_64-linux-gnu/crt1.o /usr/lib/x86_64-linux-gnu/crti.o /usr/lib/x86_64-linux-gnu/crtn.o -lc
 
-program1: pgma.c
-    gcc -c pgma.c
+home:
+	$(AS)	
+	ld malloc.o -o run -dynamic-linker /lib/ld-linux-x86-64.so.2 /usr/lib/crt1.o /usr/lib/crti.o /usr/lib/crtn.o -lc
 
-
-program2: ass_malloc.s
-    as ass_malloc.s -o malloc.o 
-
-program3: 
-	gcc pgma.o malloc.o -o full
+c:
+	as malloc.s -o malloc.a
+	gcc  prog.c malloc.a -o run -no-pie
+clean:
+	rm *.o
+	rm run

@@ -6,7 +6,7 @@
 	.equ OK, 0 
 
 .section .text 
-.globl iniciaAlocador, alocaMem, finalizaAlocador, liberaMem, _start
+.globl iniciaAlocador, alocaMem, finalizaAlocador, imprimeMapa, liberaMem, _start
 iniciaAlocador:
 	pushq %rbp	
 	movq %rsp, %rbp
@@ -135,7 +135,7 @@ imprimeMapa:
 	popq %rbp
 	ret
 
-_start:
+/*_start:
 	call iniciaAlocador
 	
 	movq $10, A
@@ -159,4 +159,6 @@ _start:
 	movq (%rbx), %rdi
 	movq $60, %rax
 	syscall
+
+*/
 
