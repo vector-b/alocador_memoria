@@ -107,8 +107,35 @@ liberaMem:
 	popq %rbp
 	ret
 
+imprimeMapa:
+	pushq %rbp
+	movq %rsp, %rbp
 
-/*_start:
+	movq topo_heap, %rax
+	movq brk_pos  , %rbx
+
+	movq %rax, %r12
+
+	loop_ini:
+	 cmpq %rax, %rbx
+	 je fim
+
+	 movq 0(%rax), %rcx
+	 movq 8(%rax), %rdx
+
+	 #movq %r13, %rsi 
+	 #mov $str0, %rdi
+	 #call printf
+	 addq $16, %rax
+	 addq %rdx, %rax
+	 jmp loop_ini
+	fim:
+	
+
+	popq %rbp
+	ret
+
+_start:
 	call iniciaAlocador
 	
 	movq $10, A
@@ -127,9 +154,9 @@ liberaMem:
 	pushq $A
 	call alocaMem
 	
-	
+	call imprimeMapa
+
 	movq (%rbx), %rdi
 	movq $60, %rax
 	syscall
-*/
 
