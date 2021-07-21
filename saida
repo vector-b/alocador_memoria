@@ -1,0 +1,207 @@
+2,6c2,6
+< 	topo   : .quad 0
+< 	inicio : .quad 0
+< 	str0	 : .string "Início da Heap: %ld Topo da Heap: %ld \n" 
+< 	str1	 : .string "Topo da Heap: %ld \n" 
+< 	str2	 : .string "Saida cursed: %ld \n"
+---
+> 	  topo   : .quad 0
+> 	  inicio : .quad 0
+> 	  str0	 : .string "Início da Heap: %ld Topo da Heap: %ld \n" 
+> 	  str1	 : .string "Topo da Heap: %ld \n" 
+> 	  str2	 : .string "Saida cursed: %ld \n"
+12,25c12
+< .globl iniciaAlocador, alocaMem, finalizaAlocador, imprimeMapa, liberaMem, _start
+< iniciaAlocador:
+< 	pushq %rbp	
+< 	movq %rsp, %rbp
+< 
+< 	movq $12, %rax
+< 	movq $0, %rdi
+< 	syscall
+< 
+< 	movq %rax, inicio
+< 	movq %rax, topo
+< 
+< 	popq %rbp
+< 	ret
+---
+> .globl iniciaAlocador, alocaMem
+37,39c24,25
+< alocaMem:
+< 
+< 	pushq %rbp
+---
+> iniciaAlocador:
+> 	pushq %rbp	
+42,106d27
+< 	#Recebe valor digitado:
+< 	movq 16(%rbp), %rbx
+< 
+< 	movq inicio, %rax
+< 	movq topo , %rcx 
+< 
+< 
+< 	loop_alocador:			
+< 	 cmpq %rax, %rcx
+< 	 je alocador_extra
+< 
+< 
+< 	pesquisa_blocos:		
+< 	 movq 0(%rax), %r9
+< 	 movq 8(%rax), %r10
+< 
+< 	 cmpq $OK, %r9
+< 	 jne proximo_bloco
+< 
+< 	 cmpq (%rbx), %r10
+< 	 jle proximo_bloco
+< 
+< 	este_bloco:
+< 	 movq $NOT_OK, 0(%rax)
+< 	 #movq  (%rbx), %r11
+< 	 #movq 	 %r11, 8(%rax)
+< 	 addq 	  $16, %rax
+< 	 jmp saida
+< 
+< 	proximo_bloco:
+< 	 addq $16, %rax
+< 	 addq %r10, %rax
+< 	 jmp loop_alocador
+< 
+< 
+< 	alocador_extra:			
+< 	 movq (%rbx), %r8
+< 	 addq    $16, %r8
+< 	 addq 	%rcx, %r8
+< 	 
+< 	 movq %rax, %r15
+< 
+< 	 movq $12, %rax
+< 	 movq %r8, %rdi
+< 	 syscall
+< 
+< 	 movq %r15, %rax
+< 
+< 	 movq (%rbx), %r15
+< 
+< 	 movq $NOT_OK , 0(%rax)
+< 	 movq %r15    , 8(%rax)
+< 	 addq $16, %rax
+< 
+< 	 movq %r8, topo
+< 	 jmp saida
+< 
+< 	saida:
+< 	 popq %rbp
+< 	 ret
+< 	
+< finalizaAlocador:
+< 	pushq %rbp
+< 	movq %rsp, %rbp
+< 	movq inicio, %rdi
+107a29
+> 	movq $0, %rdi
+109,110d30
+< 	popq %rbp
+< 	ret
+112,118c32,34
+< liberaMem:
+< 	pushq %rbp
+< 	movq %rsp, %rbp
+< 
+< 	movq 16(%rbp), %rax
+< 	subq $16, %rax
+< 	movq $OK, 0(%rax)
+---
+> 	movq %rax, inicio
+> 	movq %rax, topo
+> 	call printaval
+123c39
+< imprimeMapa:
+---
+> alocaMem:
+128c44,46
+< 	movq topo  , %rbx
+---
+> 	movq topo  , %r12
+> 
+> 	movq 16(%rbp), %r15
+130c48,52
+< 	movq %rax, %r12
+---
+> 	alocador_extra:
+> 	 
+> 	 movq (%r15), %r14
+> 	 addq    $16, %r14
+> 	 addq   %r12, %r14
+132,134c54,58
+< 	loop_ini:
+< 	 cmpq %rax, %rbx
+< 	 je fim
+---
+> 	 pushq %rax
+> 	 movq $12, %rax
+> 	 movq %r14, %rdi
+> 	 syscall
+> 	 popq %rax
+136,137c60
+< 	 movq 0(%rax), %rcx
+< 	 movq 8(%rax), %rdx
+---
+> 	 movq (%r15), %r13
+139,141c62,64
+< 	 #movq %r13, %rsi 
+< 	 #mov $str0, %rdi
+< 	 #call printf
+---
+> 	 movq $1  , 0(%rax)
+> 	 movq %r13, 8(%rax)
+> 	 
+143,146d65
+< 	 addq %rdx, %rax
+< 	 jmp loop_ini
+< 	fim:
+< 	
+148,149c67
+< 	popq %rbp
+< 	ret
+---
+> 	 movq %r14, topo
+151,170c69
+< /*_start:
+< 	call iniciaAlocador
+< 	
+< 	movq $10, A
+< 	pushq $A
+< 	call alocaMem
+< 
+< 	movq $20, A
+< 	pushq $A
+< 	call alocaMem
+< 
+< 	movq $20, A
+< 	pushq $A
+< 	call alocaMem
+< 
+< 	movq $20, A
+< 	pushq $A
+< 	call alocaMem
+< 	
+< 	call imprimeMapa
+---
+> 	 call printaval
+172,174c71,73
+< 	movq (%rbx), %rdi
+< 	movq $60, %rax
+< 	syscall
+---
+> 	 mov $str2, %rdi
+> 	 movq %r14, %rsi
+> 	 call printf
+176c75,77
+< */
+---
+> 	saida:
+> 	 popq %rbp
+> 	 ret

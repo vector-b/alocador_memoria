@@ -9,7 +9,7 @@ home:
 
 c:
 	as malloc.s -o malloc.a
-	gcc  prog.c malloc.a -o run -no-pie
+	gcc  prog.c malloc.a -o run -no-pie -g
 clean:
 	rm *.o
 	rm run
