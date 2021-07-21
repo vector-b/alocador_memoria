@@ -66,7 +66,7 @@ alocaMem:
 		cmpq $0, %r12
 		jne proximo_bloco
 
-		cmpq (%rbx), %r13
+		cmpq %rbx, %r13
 	    jle proximo_bloco
 
 	aloca_aqui:
@@ -126,7 +126,7 @@ liberaMem:
 	movq %rdi, %rcx
 
 	subq $16, %rcx
-	movq $OK, 0(%rcx)
+	movq $OK, (%rcx)
 
 	popq %rbp
 	ret
