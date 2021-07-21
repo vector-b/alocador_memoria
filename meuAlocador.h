@@ -3,6 +3,8 @@ void iniciaAlocador();   // Executa syscall brk para obter o endereço do topo
                          // corrente da heap e o armazena em uma
                          // variável global, topoInicialHeap.
 void finalizaAlocador(); // Executa syscall brk para restaurar o valor
+
+void printaval();
                          // original da heap contido em topoInicialHeap.
 int liberaMem(void* bloco); // indica que o bloco está livre.
 void* alocaMem(int num_bytes); // 1. Procura um bloco livre com tamanho maior ou
