@@ -46,22 +46,32 @@ alocaMem:
 
 	movq %rdi, %rbx
 
-
 	mov $str3, %rdi
 	movq %rbx, %rsi
 	call printf
+
+	movq $0, %r9	#min tam
+	movq $0, %r15	#address
+	movq $0, %r14	#check_disp
 
 	movq inicioHeap, %rcx
 	movq topoHeap  , %rdx
 
 	check:
 		cmpq %rcx, %rdx
-		je aloca
+		je comp_slot
+		jmp compara
+
+	comp_slot:
+
+		cmpq $10, %r14
+		je aloca_aqui
+		jmp aloca
 
 	compara:
+
 		movq 0(%rcx), %r12
 		movq 8(%rcx), %r13
-
 
 		cmpq $0, %r12
 		jne proximo_bloco
@@ -69,10 +79,33 @@ alocaMem:
 		cmpq %rbx, %r13
 	    jle proximo_bloco
 
+	salva_menor:
+		cmpq $0, %r9
+		je auto_save
+
+		cmpq %r13, %r9
+		jl proximo_bloco
+
+		mov $str2, %rdi
+		movq $10, %rsi
+		call printf
+
+	auto_save:
+		movq %r13, %r9
+		movq $10, %r14
+		movq %rcx, %r15
+
+		jmp proximo_bloco
+
 	aloca_aqui:
-		movq $1, 0(%rcx)
-		addq $16, %rcx
-		movq %rcx, %rax
+		movq $1, 0(%r15)
+		addq $16, %r15
+
+
+		
+
+
+		movq %r15, %rax
 		jmp saida
 
 	proximo_bloco:
