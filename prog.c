@@ -3,28 +3,49 @@
 #include <string.h>
 int main()
 {
-	char *a, *b, *c;
+	char *a, *b, *c, *d, *e;
 	iniciaAlocador();
 	
-	a = alocaMem(100);
-	strcpy(a, "JESUS");
+	a = alocaMem(200);
+	strcpy(a, "VICTOR");
 
-	b = alocaMem(200);
-	strcpy(b, "EU TE AMO");
+	b = alocaMem(75);
+	strcpy(b, "GABRIEL");
 
 	c = alocaMem(100);
-	strcpy(c, "AMO");
+	strcpy(c, "SOUZA");
+
+	d = alocaMem(75);
+	strcpy(d, "DE OLIVEIRA");
+
+	e = alocaMem(50);
+	strcpy(e, "BARBOSA");
 	
 	printaval();
 	imprimeMapa();
+
 	printf("%s\n",a );
 	printf("%s\n",b );
 	printf("%s\n",c );
+	printf("%s\n",d );
+	printf("%s\n",e );
+
 	printaval();
-	
+
 	liberaMem(a);
 	liberaMem(b);
 	liberaMem(c);
+	liberaMem(d);
+	liberaMem(e);
+
+	a = alocaMem(30);
+	strcpy(a, "cristo!");
+	printf("%s\n",a );
+
+	b = alocaMem(60);
+	strcpy(b, "cristo!");
+	printf("%s\n",b );
+	imprimeMapa();
 
 	finalizaAlocador();
 
