@@ -6,7 +6,7 @@ int main()
 	char *a, *b, *c, *d, *e;
 	iniciaAlocador();
 	
-	a = alocaMem(200);
+	a = alocaMem(120);
 	strcpy(a, "VICTOR");
 
 	b = alocaMem(75);
@@ -21,16 +21,10 @@ int main()
 	e = alocaMem(50);
 	strcpy(e, "BARBOSA");
 	
-	printaval();
-	imprimeMapa();
+	//printaval();
+	//imprimeMapa();
 
-	printf("%s\n",a );
-	printf("%s\n",b );
-	printf("%s\n",c );
-	printf("%s\n",d );
-	printf("%s\n",e );
-
-	printaval();
+	//printaval();
 
 	liberaMem(a);
 	liberaMem(b);
@@ -40,11 +34,11 @@ int main()
 
 	a = alocaMem(30);
 	strcpy(a, "cristo!");
-	printf("%s\n",a );
+	//printf("%s\n",a );
 
 	b = alocaMem(60);
 	strcpy(b, "cristo!");
-	printf("%s\n",b );
+	//printf("%s\n",b );
 	imprimeMapa();
 
 	finalizaAlocador();

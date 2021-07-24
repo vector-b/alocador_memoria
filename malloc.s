@@ -5,9 +5,15 @@
 	  str1	 : .string "Disp: %ld  Tamanho: %ld \n" 
 	  str2	 : .string "Saida cursed: %ld \n"
 	  str3	 : .string "Valor atual: %ld \n"
+	  str4	 : .string "#"
+	  ocup	 : .string "+"
+	  free	 : .string "-"
+	  break_line	 : .string "\n"
+
 			A: .long 0 
 	.equ NOT_OK, 1 
 	.equ OK, 0 
+	.equ HEADER, 16
 
 .section .text 
 .globl iniciaAlocador, alocaMem, main, finalizaAlocador, liberaMem, imprimeMapa, printaval
@@ -165,16 +171,86 @@ imprimeMapa:
 		cmpq %r13, %r14
 		je fim_while
 
-		mov $str1, %rdi
-		movq 0(%r13), %rsi
-		movq 8(%r13), %rdx
-		call printf
-
+		#mov $str1, %rdi
+		#movq 0(%r13), %rsi
+		#movq 8(%r13), %rdx
+		#call printf
+		movq 0(%r13), %r12
 		movq 8(%r13), %r15
 
-		addq %r15, %r13
-		addq $16, %r13
-		jmp inicio_while
+		movq $1, %rbx
+		movq $1, %rcx
+
+		while_header:
+			cmpq $HEADER, %rbx
+			je saida_while_header
+
+			pushq %rcx
+			pushq %rbx
+
+			mov $str4, %rdi
+			call printf
+
+			popq %rbx
+			popq %rcx
+
+			addq $1, %rbx
+
+			jmp while_header
+		saida_while_header:
+
+		cmpq $NOT_OK, %r12
+		je imprime_ocupado
+		jne imprime_livre
+
+		imprime_ocupado:
+			cmpq %r15, %rcx
+			jge saida_padrao
+
+			pushq %rcx
+			pushq %rbx
+
+			mov $ocup, %rdi
+			call printf
+
+			popq %rbx
+			popq %rcx
+
+
+
+			addq $1, %rcx
+
+			jmp imprime_ocupado
+
+		imprime_livre:
+			cmpq %r15, %rcx
+			jge saida_padrao
+
+			pushq %rcx
+			pushq %rbx
+
+			mov $free, %rdi
+			call printf
+
+			popq %rbx
+			popq %rcx
+
+			addq $1, %rcx
+
+			jmp imprime_livre
+
+		saida_padrao:
+		
+			pushq %rcx
+			pushq %rbx
+			mov $break_line, %rdi
+			call printf
+			popq %rbx
+			popq %rcx
+
+			addq %r15, %r13
+			addq $16, %r13
+			jmp inicio_while
 
 	fim_while:
 
