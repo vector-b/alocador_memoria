@@ -6,6 +6,7 @@
 	  str2	 : .string "Saida cursed: %ld \n"
 	  str3	 : .string "Valor atual: %ld \n"
 	  str4	 : .string "#"
+	  str5	 : .string "Heap vazia!\n"
 	  ocup	 : .string "+"
 	  free	 : .string "-"
 	  break_line	 : .string "\n"
@@ -167,6 +168,8 @@ imprimeMapa:
 	movq inicioHeap, %r13
 	movq topoHeap  , %r14
 
+	cmpq %r13, %r14
+	je saida_vazia
 	inicio_while:
 		cmpq %r13, %r14
 		je fim_while
@@ -253,8 +256,18 @@ imprimeMapa:
 			jmp inicio_while
 
 	fim_while:
+	jmp the_end
+	saida_vazia:
+		pushq %rcx
+		pushq %rbx
 
+		mov $str5, %rdi
+		call printf
 
+		popq %rbx
+		popq %rcx
+
+	the_end:
 
 	popq %rbp
 	ret
