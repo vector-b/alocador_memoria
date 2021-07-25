@@ -1,6 +1,8 @@
 .section .data	
 	  topoHeap  : .quad 0
 	  inicioHeap : .quad 0
+	  lim_Brk: .quad 0
+	  fr_spc: .quad 0
 	  str0	 : .string "Inicio: %ld Topo: %ld \n" 
 	  str1	 : .string "Disp: %ld  Tamanho: %ld \n" 
 	  str2	 : .string "Saida cursed: %ld \n"
@@ -35,11 +37,14 @@ iniciaAlocador:
 	pushq %rbp	
 	movq %rsp, %rbp
 
+
+
 	movq $12, %rax
 	movq $0, %rdi
 	syscall
 
 	#inc  %rax
+	movq %rax, lim_Brk
 	movq %rax, inicioHeap
 	movq %rax, topoHeap
 
@@ -51,7 +56,17 @@ alocaMem:
 	movq %rsp, %rbp
 	subq $0, %rsp
 
+
 	movq %rdi, %rbx
+
+	movq lim_Brk, %rdi
+	subq topoHeap, %rdi  #Espaço livre
+	movq %rdi, fr_spc
+		#movq 0(%r13), %rsi
+		#movq 8(%r13), %rdx
+		#call printf
+
+
 
 	movq $0, %r9	#min tam
 	movq $0, %r15	#address
@@ -113,30 +128,27 @@ alocaMem:
 	aloca:
 		#movq , %r11		#aux
 		movq %rbx, %r10
-		
 		movq %r10, %r11
 		addq  $16, %r11
-		addq topoHeap, %r11
+
+		cmpq %r11, fr_spc
+		jl aloca_4k
+
+		espaco_livre:
+		
+			
+			jmp saida
+		aloca_4k:
+			
 
 		
-		movq %r11, topoHeap
-
-		movq $12,  %rax
-		movq %r11, %rdi
-		syscall
-
-		movq %rax, %rdx
-		subq %r10, %rdx
-		subq $16,  %rdx
-
-		movq   $1, (%rdx)
-		addq   $8,  %rdx
-		movq %r10, (%rdx)
-		addq   $8,  %rdx
-
-		movq %rdx, %rax	
+		/*mov $str2, %rdi
+		movq 0(%r13), %rsi
+		movq 8(%r13), %rdx
+		call printf	*/
 
 	saida:
+		
 		popq %rbp
 		ret
 
