@@ -11,12 +11,15 @@
 	  str5	 : .string "Heap vazia!\n"
 	  ocup	 : .string "+"
 	  free	 : .string "-"
+	  teste	 : .string "TESTE!  \n"
+	  bug_avoid	 : .string "\b"
 	  break_line	 : .string "\n"
 
 			A: .long 0 
 	.equ NOT_OK, 1 
 	.equ OK, 0 
 	.equ HEADER, 16
+	.equ MAX_SIZE, 4096
 
 .section .text 
 .globl iniciaAlocador, alocaMem, main, finalizaAlocador, liberaMem, imprimeMapa, printaval
@@ -62,15 +65,19 @@ alocaMem:
 	movq lim_Brk, %rdi
 	subq topoHeap, %rdi  #Espaço livre
 	movq %rdi, fr_spc
+
+	cmpq %rbx, fr_spc
+	jl brk_sol
 		#movq 0(%r13), %rsi
 		#movq 8(%r13), %rdx
 		#call printf
 
 
-
-	movq $0, %r9	#min tam
-	movq $0, %r15	#address
-	movq $0, %r14	#check_disp
+	return:
+		movq $0, %r8
+		movq $0, %r9	#min tam
+		movq $0, %r15	#address
+		movq $0, %r14	#check_disp
 
 	movq inicioHeap, %rcx
 	movq topoHeap  , %rdx
@@ -128,27 +135,48 @@ alocaMem:
 	aloca:
 		#movq , %r11		#aux
 		movq %rbx, %r10
+		
 		movq %r10, %r11
 		addq  $16, %r11
-
-		cmpq %r11, fr_spc
-		jl aloca_4k
-
-		espaco_livre:
-		
-			
-			jmp saida
-		aloca_4k:
-			
+		addq topoHeap, %r11
 
 		
-		/*mov $str2, %rdi
-		movq 0(%r13), %rsi
-		movq 8(%r13), %rdx
-		call printf	*/
+		movq %r11, topoHeap
+
+		/*movq $12,  %rax
+		movq %r11, %rdi
+		syscall*/
+
+		movq %rcx, %rdx
+
+		movq   $1, (%rdx)
+		addq   $8,  %rdx
+		movq %r10, (%rdx)
+		addq   $8,  %rdx
+
+		movq %rdx, %rax
+		jmp saida
+
+	brk_sol:
+		addq $MAX_SIZE, %r8
+		cmpq %rbx, %r8
+		jg livre
+		jle brk_sol
+	livre:
+		movq $12, %rax
+		movq %r8, %rdi
+		syscall
+
+
+		movq $bug_avoid, %rdi
+		call printf
+
+		addq %r8, lim_Brk
+		jmp return
+
+
 
 	saida:
-		
 		popq %rbp
 		ret
 
@@ -193,8 +221,8 @@ imprimeMapa:
 		movq 0(%r13), %r12
 		movq 8(%r13), %r15
 
-		movq $1, %rbx
-		movq $1, %rcx
+		movq $0, %rbx
+		movq $0, %rcx
 
 		while_header:
 			cmpq $HEADER, %rbx

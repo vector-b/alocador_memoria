@@ -3,6 +3,7 @@
 #include <string.h>
 int main()
 {
+	
 	char *a, *b, *c, *d, *e;
 	iniciaAlocador();
 	
@@ -39,7 +40,7 @@ int main()
 	b = alocaMem(60);
 	strcpy(b, "cristo!");
 	//printf("%s\n",b );
-	imprimeMapa();
+	//imprimeMapa();
 
 	finalizaAlocador();
 
