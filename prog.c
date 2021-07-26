@@ -37,8 +37,8 @@ int main()
 	strcpy(a, "cristo!");
 	printf("%s\n",a );
 
-	b = alocaMem(60);
-	strcpy(b, "cristo!");
+	b = alocaMem(40);
+	strcpy(b, "aaaaaaaaaaaaaaaaaaaaaa");
 	printf("%s\n",b );
 	imprimeMapa();
 
