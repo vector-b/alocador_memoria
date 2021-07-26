@@ -5,7 +5,7 @@
 	  fr_spc: .quad 0
 	  str0	 : .string "Inicio: %ld Topo: %ld \n" 
 	  str1	 : .string "Disp: %ld  Tamanho: %ld \n" 
-	  str2	 : .string "Saida cursed: %ld \n"
+	  str2	 : .string "Saida diferenciada: %ld \n"
 	  str3	 : .string "Valor atual: %ld \n"
 	  str4	 : .string "#"
 	  str5	 : .string "Heap vazia!\n"
@@ -42,12 +42,12 @@ iniciaAlocador:
 
 
 
-	movq $12, %rax
+	movq $12, %rax					#Faz a syscall inicial para pegar o valor inicial da brk
 	movq $0, %rdi
 	syscall
 
 	#inc  %rax
-	movq %rax, lim_Brk
+	movq %rax, lim_Brk				#Salva o valor atual da brk nas variaveis globais
 	movq %rax, inicioHeap
 	movq %rax, topoHeap
 
@@ -60,27 +60,23 @@ alocaMem:
 	subq $0, %rsp
 
 
-	movq %rdi, %rbx
+	movq %rdi, %rbx					#Captura o parametro recebido e coloca em rbx
 
-	movq lim_Brk, %rdi
-	subq topoHeap, %rdi  #Espaço livre
-	movq %rdi, fr_spc
 
-	cmpq %rbx, fr_spc
-	jl brk_sol
 		#movq 0(%r13), %rsi
 		#movq 8(%r13), %rdx
 		#call printf
 
 
-	return:
-		movq $0, %r8
-		movq $0, %r9	#min tam
-		movq $0, %r15	#address
-		movq $0, %r14	#check_disp
 
-	movq inicioHeap, %rcx
-	movq topoHeap  , %rdx
+		movq $0, %r8
+		movq $0, %r9				#min tam
+		movq $0, %r15				#address
+		movq $0, %r14				#check_disp
+
+	movq inicioHeap, %rcx			#inicio -> 0
+	movq topoHeap  , %rdx			#topo salvo em rdx 
+									#não usamos mais o lim_brk a partir daqui
 
 	check:
 		cmpq %rcx, %rdx
@@ -134,6 +130,17 @@ alocaMem:
 	
 	aloca:
 		#movq , %r11		#aux
+
+		return:							#Retorno do loop de alocação de 4k bytes
+			movq lim_Brk, %rdi 				#Salva o limite atual da brk em rdi
+			subq topoHeap, %rdi  			#Subtrai o topo da Heap de rdi
+			movq %rdi, fr_spc    			#lim_brk - topo heap = espaço livre (disponível)
+
+		cmpq %rbx, fr_spc 				#Checa se o espaço livre é menor do que o que precisamos
+		jl brk_sol
+
+
+
 		movq %rbx, %r10
 		
 		movq %r10, %r11
@@ -163,6 +170,10 @@ alocaMem:
 		jg livre
 		jle brk_sol
 	livre:
+
+		pushq %rcx
+		pushq %rbx
+
 		movq $12, %rax
 		movq %r8, %rdi
 		syscall
@@ -171,6 +182,9 @@ alocaMem:
 		movq $bug_avoid, %rdi
 		call printf
 
+		popq %rbx
+		popq %rcx
+		
 		addq %r8, lim_Brk
 		jmp return
 

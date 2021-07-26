@@ -7,7 +7,7 @@ int main()
 	char *a, *b, *c, *d, *e;
 	iniciaAlocador();
 	
-	a = alocaMem(120);
+	a = alocaMem(5);
 	strcpy(a, "VICTOR");
 
 	b = alocaMem(75);
@@ -35,12 +35,12 @@ int main()
 
 	a = alocaMem(30);
 	strcpy(a, "cristo!");
-	//printf("%s\n",a );
+	printf("%s\n",a );
 
 	b = alocaMem(60);
 	strcpy(b, "cristo!");
-	//printf("%s\n",b );
-	//imprimeMapa();
+	printf("%s\n",b );
+	imprimeMapa();
 
 	finalizaAlocador();
 
