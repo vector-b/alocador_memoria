@@ -1,6 +1,6 @@
 # Alocador de Memória em Assembly
-Este é um Alocador de Memória feito em assembly amd x86-64 com a variação de 64bits
-Esse projeto foi desenvolvido para a matéria de Software Básico do Curso de BCC na UFPR.
+Este é um Alocador de Memória feito em assembly amd x86-64 com a variação de 64bits.<br>
+Esse projeto foi desenvolvido para a matéria de Software Básico do Curso de BCC na UFPR.<br>
 A ideia principal é construir um alocador e um gerenciador de memória simples.
 
 Nesse repositório você poderá encontrar 3 branches:
