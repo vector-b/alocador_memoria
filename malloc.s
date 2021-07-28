@@ -46,7 +46,6 @@ iniciaAlocador:
 	movq $0, %rdi
 	syscall
 
-	#inc  %rax
 	movq %rax, lim_Brk				#Salva o valor atual da brk nas variaveis globais
 	movq %rax, inicioHeap
 	movq %rax, topoHeap
@@ -86,10 +85,10 @@ alocaMem:
 		movq 8(%rcx), %r13			#Move o tamanho do espaço alocado (sem o offset de 16) para r13
 
 		cmpq $OK, %r12  			#Compara %r12 com 0
-		jne proximo_bloco 			#Caso seja 1 (ocupado), procura outro bloco de memória
+		jne prox_bloco 			    #Caso seja 1 (ocupado), procura outro bloco de memória
 
 		cmpq %rbx, %r13   			#Compara o valor de r13 com o valor desejado (rbx), se r13 for menor ou igual, procura outro bloco
-	    jle proximo_bloco
+	    jle prox_bloco
 
 	salva_menor:
 
@@ -97,7 +96,7 @@ alocaMem:
 		je auto_save 				#Caso r9 seja 0, vai para autosave pra inicializar a variavel com o primeiro valor de r9 (menor do que rbx)
 
 		cmpq %r13, %r9 				#Compara r9 com r13
-		jl proximo_bloco 			#Caso r9, seja menor que r13, o valor disponivel não é o suficiente, então vai pro proximo bloco	
+		jl prox_bloco 			    #Caso r9, seja menor que r13, o valor disponivel não é o suficiente, então vai pro proximo bloco	
 
 		
 
@@ -106,7 +105,7 @@ alocaMem:
 		movq $10, %r14 				#Atualiza r14 com o valor de 10, para informar que em algum lugar há um slot disponivel 
 		movq %rcx, %r15 			#Salva o endereço do lugar disponivel para alocar
 
-		jmp proximo_bloco 			#Passa para o proximo bloco
+		jmp prox_bloco 			    #Passa para o proximo bloco
 
 	aloca_aqui:
 		movq $NOT_OK, 0(%r15) 		#Muda o valor de 0(%r15) para "ocupado"
@@ -115,13 +114,12 @@ alocaMem:
 		movq %r15, %rax				#Retorna o ponteiro com 16 bytes de offset no espaço disponível
 		jmp saida
 
-	proximo_bloco:
+	prox_bloco:
 		addq %r13, %rcx  			#Adiciona o tamanho do espaço no endereço de rcx 
 		addq  $16, %rcx 			#Adiciona 16 bytes no endereço de rcx para ir até o próximo bloco
 		jmp check
 	
 	aloca:
-		#movq , %r11		#aux
 
 		return:							#Retorno do loop de alocação de 4k bytes
 			movq lim_Brk, %rdi 			#Salva o limite atual da brk em rdi
@@ -157,6 +155,7 @@ alocaMem:
 		cmpq %rbx, %r8					#Checa se r8 é menor que o valor maximo
 		jg livre 						#Caso seja maior, ja aloca
 		jle brk_sol						#Caso seja menor, retorna e aloca mais MAX_SIZE (4096)
+
 	livre:
 
 		pushq %rcx

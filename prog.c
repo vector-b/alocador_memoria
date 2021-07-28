@@ -22,11 +22,6 @@ int main()
 	e = alocaMem(50);
 	strcpy(e, "BARBOSA");
 	
-	//printaval();
-	//imprimeMapa();
-
-	//printaval();
-
 	liberaMem(a);
 	liberaMem(b);
 	liberaMem(c);
@@ -34,19 +29,15 @@ int main()
 	liberaMem(e);
 
 	a = alocaMem(30);
-	strcpy(a, "cristo!");
+	strcpy(a, "a");
 	printf("%s\n",a );
 
 	b = alocaMem(40);
-	strcpy(b, "aaaaaaaaaaaaaaaaaaaaaa");
+	strcpy(b, "b");
 	printf("%s\n",b );
 	imprimeMapa();
 
 	finalizaAlocador();
-
-	
-	
-	//printf("%s\n",a );
 
 	return 0;
 }
