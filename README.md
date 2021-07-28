@@ -18,6 +18,6 @@ V1 - Possui a implementação simples de um alocador com gerenciador de memória
 Até o momento só existe uma quantidade razoavel de comentários na V3, futuramente posso adicionar nas outras versões.
 Pra quem tem curiosidade ou também cursa uma disciplina parecida, recomendo a leitura do livro **Programming from the ground up** de Jonathan Bartlett, onde o mesmo sugere uma forma de implementar um gerenciador de memória no Cap.9!
 
-Obrigado, até mais!
+Obrigado, até mais! <br>
 ![char](https://user-images.githubusercontent.com/56267233/127407894-1082dfbb-042d-497a-badb-6f426734a8f9.gif)
 
