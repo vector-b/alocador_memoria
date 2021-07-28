@@ -6,11 +6,11 @@ A ideia principal é construir um alocador e um gerenciador de memória simples.
 Neste repositório você poderá encontrar 3 branches:
 
 V3 (default) - Possui a versão comum do projeto com 2 implementações extras:<br>
-  -> Best-fit: Procura pelo menor espaço possível para alocação de um novo bloco<br>
-  -> Aloca4k: Diminui o acesso a brk realizando alocações de 4096 bytes<br>
+- Best-fit: Procura pelo menor espaço possível para alocação de um novo bloco
+- Aloca4k: Diminui o acesso a brk realizando alocações de 4096 bytes
   
 V2 - Possui a implementação comum do projeto com 1 implementação extra:<br>
-  -> Best-fit: Procura pelo menor espaço possível para alocação de um novo bloco<br>
+- Best-fit: Procura pelo menor espaço possível para alocação de um novo bloco
 
 V1 - Possui a implementação simples de um alocador com gerenciador de memória<br>
 
