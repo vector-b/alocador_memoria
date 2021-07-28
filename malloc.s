@@ -16,10 +16,10 @@
 	  break_line	 : .string "\n"
 
 			A: .long 0 
-	.equ NOT_OK, 1 
-	.equ OK, 0 
+	.equ NOT_OK, 1  #Bloco Ocupado
+	.equ OK, 0 		#Bloco Livre
 	.equ HEADER, 16
-	.equ MAX_SIZE, 4096
+	.equ MAX_SIZE, 4096 #Tamanho padrão pra alocação da brk
 
 .section .text 
 .globl iniciaAlocador, alocaMem,  finalizaAlocador, liberaMem, imprimeMapa, printaval
@@ -294,11 +294,22 @@ imprimeMapa:
 			popq %rbx
 			popq %rcx
 
+
+
 			addq %r15, %r13
 			addq $16, %r13
 			jmp inicio_while
 
 	fim_while:
+
+		pushq %rcx
+		pushq %rbx
+
+		mov $break_line, %rdi 		#Printa o \n no final
+		call printf
+
+		popq %rbx
+		popq %rcx
 	jmp the_end
 	saida_vazia:
 		pushq %rcx
