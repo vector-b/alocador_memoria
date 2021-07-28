@@ -62,13 +62,6 @@ alocaMem:
 
 	movq %rdi, %rbx					#Captura o parametro recebido e coloca em rbx
 
-
-		#movq 0(%r13), %rsi
-		#movq 8(%r13), %rdx
-		#call printf
-
-
-
 		movq $0, %r8
 		movq $0, %r9				#min tam
 		movq $0, %r15				#address
@@ -148,10 +141,6 @@ alocaMem:
 
 		
 		movq %r11, topoHeap				#Atualiza valor do topo da heap com r11
-
-		/*movq $12,  %rax
-		movq %r11, %rdi
-		syscall*/
 
 		movq %rcx, %rdx					#Passa o endereço do espaço alocado pra rdx
 
